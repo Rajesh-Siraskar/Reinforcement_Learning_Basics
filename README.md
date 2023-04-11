@@ -1,4 +1,4 @@
-# Reinforcement Learning Basics
+# Reinforcement Learning Basics ("beginners only" repo)
 
 - For people new to RL. This is based on Phil Tabor's lectures
 - Have simplified some steps - them seemed too "compact" - so expanded them in order to help beginners understand them better 
