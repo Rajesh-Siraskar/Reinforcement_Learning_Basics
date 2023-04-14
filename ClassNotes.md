@@ -13,6 +13,6 @@
 - When epsilon is small (0.01), gets caught in local minimas!!! Classic curve.
 - Using same network to **evaluate** max action as well as **choose** max action.
 - Updated EVERY step - so "chasing a moving target"!
-- $max_a Q(s',a_max)$ part. Is biased toward max.
+- $max_a Q(s',a_{max})$ part. Is biased toward max.
 - Possible to learn with small space (cart-pole=4 space)
 -  
