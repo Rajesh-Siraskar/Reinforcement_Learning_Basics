@@ -1,7 +1,7 @@
-# Reinforcement Learning Basics 
-### (This is a "beginners only" repo)
+# Reinforcement Learning Algorithms
+### This is where I am learning the core RL algorithms from "scratch"
 
-- For people new to RL. This is based on Phil Tabor's lectures
+- Basic algorithms - from scratch
 - Have simplified some steps - them seemed too "compact" - so expanded them in order to help beginners understand them better 
 - Have added some explanatory code comments too
 
