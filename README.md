@@ -3,7 +3,7 @@
 
 - Basic algorithms - from scratch
 - Have simplified some steps - them seemed too "compact" - so expanded them in order to help beginners understand them better 
-- Have added some explanatory code comments too
+- Have added "extra" explanatory code comments
 
 **To-do**
 1. Adapt the naive DQN to a predictive maintenance problem
