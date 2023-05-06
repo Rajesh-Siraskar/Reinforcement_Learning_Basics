@@ -98,7 +98,7 @@ class Agent():
     def onpolicy_reset(self):
         self.log_probs = []
         self.rewards = []
-        
+    
     def act(self, state):
         ## Continous action - use Normal pd
         ## pd = Normal(loc=pdparams[0], scale=pdparams[1]) # probability distribution
@@ -113,6 +113,13 @@ class Agent():
         log_prob = pd.log_prob(action) # log prob of pi(a|s)
         self.log_probs.append(log_prob) # store for training
         return (action.item())
+    
+    ## predict is the function used by Stable-Baselines
+    ## We simply call act()
+    def predict(self, state):
+        predicted_action = self.act(state)
+        next_state = None
+        return predicted_action, next_state
     
     def learn(self):
         # Inner gradient-ascent loop
