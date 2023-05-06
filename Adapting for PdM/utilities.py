@@ -5,6 +5,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 
+def store_results(rounds, episodes, rewards_history, ep_tool_replaced_history):    
+    df = pd.DataFrame({'Round': rounds,
+                       'Episode': episodes,
+                       'Rewards': rewards_history,
+                       'Tool_replaced': ep_tool_replaced_history})
+    df.to_csv(RF_TRAINING_FILE, index=False)
+    print(f'REINFORCE algorithm results saved to {RF_TRAINING_FILE}')
+
 def write_test_results(results, results_file):
     from csv import writer
     with open(results_file, 'a', newline='') as f_object:
@@ -14,7 +22,7 @@ def write_test_results(results, results_file):
 
     print(f'- Test results written to file: {results_file}')
     
-def test_script(df, algo, episodes, env, agent, test_cases, data_file, results_file):
+def test_script(training_round, df, algo, episodes, env, agent, test_cases, data_file, results_file):
     dt = datetime.datetime.now()
     dt_d = dt.strftime('%m-%b-%Y')
     dt_t = dt.strftime('%H:%M:%S')
@@ -50,90 +58,12 @@ def test_script(df, algo, episodes, env, agent, test_cases, data_file, results_f
     # Date	Time	Enviroment	Data_file	Test_set	Algo.	Episodes	Normal_cases	Normal_Error\
     # Replacement_cases	Replacement_Error	Overall_Error	Parameter	Value
     # 5/7/2023	51:35.2	Simple ME	Tool_Wear_VB.csv	Sampled from training	A2C	300	37	54.1%	63	54.0%	54.0%		
-    results = [dt_d, dt_t, 'Simple', data_file, 'Sampled from training', algo, episodes, n_0, cumm_error_0/n_0, n_1, cumm_error_1/n_1, (cumm_error_0 + cumm_error_1)/(n_0+n_1)]
+    results = [dt_d, dt_t, training_round, 'Simple', data_file, 'Sampled from training', algo, episodes, n_0, cumm_error_0/n_0, n_1, cumm_error_1/n_1, (cumm_error_0 + cumm_error_1)/(n_0+n_1)]
 
     return results
 
 
-# def test_script(df, algo_SB, env_RF, agent_RF, env_SB, agent_SB, test_cases, results_file):
-#     cumm_error_RF_0 = 0.0
-#     cumm_error_RF_1 = 0.0
-#     n_RF_0 = 0
-#     n_RF_1 = 0
-#     for idx in test_cases:
-#         state = env_RF._get_observation(idx)
-#         action_pred = agent_RF.act(state)
-#         action_actual = int(df['ACTION_CODE'][idx])
-#         e = int(action_pred - action_actual)
-#         if idx>77:
-#             cumm_error_RF_0 += abs(e)
-#             n_RF_0 += 1
-#             # print(f' ** {idx:4d}: VB (mm): {state[1]*17.855:6.3f} \t Action predicted: {action_pred} \t actual: {action_actual} \t error: {e}')
-#         else:
-#             cumm_error_RF_1 += abs(e)
-#             n_RF_1 += 1
-#             # print(f'    {idx:4d}: VB (mm): {state[1]*17.855:6.3f} \t Action predicted: {action_pred} \t actual: {action_actual} \t error: {e}')
 
-#     if n_RF_0 == 0: n_RF_0 = 1
-#     if n_RF_1 == 0: n_RF_1 = 1
-#     # print(50*'-', f'\n Test-1: REINFORCE algorithm (300 episodes)')
-#     # print(50*'-')
-#     # print(f' Avg. Error for NORMAL {n_RF_0} cases: \t {cumm_error_RF_0*100.00/n_RF_0:6.2f} %')
-#     # print(f' Avg. Error for REPLACEMENT {n_RF_1} cases: \t {cumm_error_RF_1*100.00/n_RF_1:6.2f} %')
-#     # print(f' Overall avg. error {n_RF_0+n_RF_1} cases: \t\t {(cumm_error_RF_0 + cumm_error_RF_1)*100.00/(n_RF_0+n_RF_1):6.2f} %')
-
-#     ## Stable Baselines Test
-#     cumm_error_SB_0 = 0.0
-#     cumm_error_SB_1 = 0.0
-#     n_SB_0 = 0
-#     n_SB_1 = 0
-#     for idx in test_cases:
-#         state = env_SB._get_observation(idx)
-#         action_pred, next_state = agent_SB.predict(state)
-#         action_actual = int(df['ACTION_CODE'][idx])
-#         e = int(action_pred - action_actual)
-#         if idx>77:
-#             cumm_error_SB_0 += abs(e)
-#             n_SB_0 += 1
-#             # print(f' ** {idx:4d}: VB (mm): {state[1]*17.855:6.3f} \t Action predicted: {action_pred} \t actual: {action_actual} \t error: {e}')
-#         else:
-#             cumm_error_SB_1 += abs(e)
-#             n_SB_1 += 1
-#             # print(f'    {idx:4d}: VB (mm): {state[1]*17.855:6.3f} \t Action predicted: {action_pred} \t actual: {action_actual} \t error: {e}')
-
-#     if n_SB_0 == 0: n_SB_0 = 1
-#     if n_SB_1 == 0: n_SB_1 = 1
-#     # print(50*'-', f'\n Test-2: Stable Baselines algorithm (3k episodes)')
-#     # print(50*'-')
-#     # print(f' Avg. Error for NORMAL {n_SB_0} cases: \t {cumm_error_SB_0*100.00/n_SB_0:6.2f} %')
-#     # print(f' Avg. Error for REPLACEMENT {n_SB_1} cases: \t {cumm_error_SB_1*100.00/n_SB_1:6.2f} %')
-#     # print(f' Overall avg. error {n_SB_0+n_SB_1} cases: \t\t {(cumm_error_SB_0 + cumm_error_SB_1)*100.00/(n_SB_0+n_SB_1):6.2f} %')
-#     print(50*'-')
-#     print(f'Algo.\tNormal\tError\tReplace\tError\tOverall')
-#     print(f'\tcases\t\tcases\t\terror')
-#     print(50*'-')
-#     print(f'RF\t{n_RF_0}\t{cumm_error_RF_0/n_RF_0:5.3f}\t{n_RF_1}\t{cumm_error_RF_1/n_RF_1:5.3f}\t{(cumm_error_RF_0 + cumm_error_RF_1)/(n_RF_0+n_RF_1):5.3f}')
-#     print(f'{algo_SB}\t{n_SB_0}\t{cumm_error_SB_0/n_SB_0:5.3f}\t{n_SB_1}\t{cumm_error_SB_1/n_SB_1:5.3f}\t{(cumm_error_SB_0 + cumm_error_SB_1)/(n_SB_0+n_SB_1):5.3f}')
-#     print(50*'-')
-    
-#     # File format
-#     # Date	Time	Enviroment	Data_file	Test_set	Algo.	Episodes	Normal_cases	Normal_Error\
-#     # Replacement_cases	Replacement_Error	Overall_Error	Parameter	Value
-#     # 5/7/2023	51:35.2	Simple ME	Tool_Wear_VB.csv	Sampled from training	A2C	300	37	54.1%	63	54.0%	54.0%		
-
-#     rf_results = ['RF', n_RF_0, cumm_error_RF_0/n_RF_0, n_RF_1, cumm_error_RF_1/n_RF_1, (cumm_error_RF_0 + cumm_error_RF_1)/(n_RF_0+n_RF_1)]
-#     sb_results = [algo_SB, n_SB_0, cumm_error_SB_0/n_SB_0, n_SB_1, cumm_error_SB_1/n_SB_1, (cumm_error_SB_0 + cumm_error_SB_1)/(n_SB_0+n_SB_1)]
-#     results = [dt.date(), dt.time(), 'Simple', data_file, 'Sampled from training', *rf_results, *sb_results]
-
-#     from csv import writer
-#     with open(results_file, 'a', newline='') as f_object:
-#         writer_object = writer(f_object)
-#         writer_object.writerow(results)
-#         f_object.close()
-
-#     print(f'{dt.date()}-{dt.time()} - Test results written to file: {results_file}')
-    
-# Print learning curve
 
 def plot_learning_curve(x, rewards_history, loss_history, moving_avg_n, filename):
     fig = plt.figure()
